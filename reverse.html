@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<style type="text/css">
+			.card {
+				width: 200px;
+				height: 300px;
+				margin: 20px ;
+				position: relative;
+				transform-style: preserve-3d;
+				cursor: pointer;
+			}
+			
+			/* 卡片正面动画 */
+			.cardanimafront {
+				animation: rotate-reverse .5s cubic-bezier(.35,.86,.91,.41) forwards;
+			}
+			
+			/* 卡片背面动画 */
+			.cardanimaback {
+				animation: rotate .5s cubic-bezier(.35,.86,.91,.41) forwards;
+			} 
+			
+			.card-front, .card-reverse {
+				width: 200px;
+				height: 300px;
+				text-align: center;
+				line-height: 300px;
+				
+			}
+			
+			.card-front {
+				background-color: aliceblue;
+				position: absolute;
+			}
+			
+			.card-reverse {
+				background-color: blanchedalmond;
+				transform: rotateY(180deg);
+			}
+			
+			/* 正面到背面 */
+			@keyframes rotate {
+				0%{
+					transform: rotateY(0deg);
+				}
+				100%{
+					transform: rotateY(180deg);
+				}
+			}
+			
+			/* 背面到正面 */
+			@keyframes rotate-reverse{
+				100%{
+					transform: rotateY(0deg);
+				}
+				0%{
+					transform: rotateY(180deg);
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<div class="card">
+			<div id="front"  class="card-front">正</div>
+			<div class="card-reverse">反</div>
+		</div>
+		<script>
+			// 实现
+			let flag = 1;
+			setInterval(function(){ 
+				if( flag == '1') {
+					document.getElementsByClassName("card")[0].classList.add("cardanimaback");
+					flag = 2;
+				}else{
+					document.getElementsByClassName("card")[0].classList.remove("cardanimaback");
+					document.getElementsByClassName("card")[0].classList.add("cardanimafront");
+					flag = 1;
+				}
+				
+			}, 3000)
+		</script>
+		
+		
+			
+	</body>
+</html>
