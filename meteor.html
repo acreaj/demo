@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<style type="text/css">
+			body {
+				background-color: black;
+				margin: 0;
+				padding: 0;
+				overflow: hidden;
+			}
+			.star {
+				position: absolute;
+				width: 0;
+				height: 0;
+				opacity: 0.2;
+				border: 2px solid transparent;
+				border-bottom: 4px solid #fff;
+				animation: flash 3s infinite linear;
+			}
+			.star::before {
+				content: "";
+				position: absolute;
+				left: -2px;
+				top: 4px;
+				border: 2px solid transparent;
+				border-top: 4px solid #fff;
+			}
+			@keyframes flash{
+				20%{
+					opacity: 0.2;
+				}
+				40%{
+					opacity: 0.5;
+				}
+				60% {
+					opacity: 1;
+				}
+				80% {
+					opacity: 0.5;
+				}
+				100% {
+					opacity: 0.2;
+				}
+				
+			}
+			/* .bgc {
+				width: 100vw;
+				height:100vh;
+				background-image: linear-gradient(45deg,#277A72,#2D8C86,#073648,#002C41);
+			} */
+		</style>
+	</head>
+	<body>
+		<canvas id="Meteor" width="" height=""></canvas>
+		<script>
+			let starCount = 300;
+			let context;
+			function starInit(){
+				let bg = document.querySelector("body");
+				
+				for (let i = 0; i < starCount ; i++) {
+					let star = document.createElement("div");
+					star.classList.add("star");
+					bg.appendChild(star);
+				}
+			}
+			function starPosition(){
+				let stars = document.querySelectorAll(".star");
+				for (let i = 0; i < starCount ; i++){
+					stars[i].style.left = Math.random()*window.innerWidth+"px";
+					stars[i].style.top = Math.random()*window.innerHeight+"px";
+					stars[i].style.animationDelay = Math.random()*10+"s";
+				}
+			}
+			// 初始化画布
+			function init(){
+				let meteor = document.getElementById("Meteor");
+				meteor.width = window.innerWidth;
+				meteor.height = window.innerHeight;
+				context = meteor.getContext("2d");
+			}
+			
+			// 初始化流星雨
+			function meteorRain(){
+				//坐标
+				this.x = Math.random()*window.innerWidth, 
+				this.y = Math.random()*window.innerHeight,  
+				//长度
+				this.length = Math.ceil(Math.random()*80+150)  
+				// 角度
+				this.angle = 30;
+				this.cos = Math.cos((this.angle*3.14)/180)
+				this.sin =  Math.sin((this.angle*3.14)/180)
+				//水平距离和垂直距离
+				this.width = this.length*this.cos
+				this.height = this.length* this.sin
+				
+				//下落速度
+				this.speed = Math.ceil(Math.random()+0.5)
+				
+				// 偏移速度（偏移距离）
+				this.shifting_x = this.speed*this.cos;
+				this.shifting_y = this.speed*this.sin;
+				
+				// 新位置
+				this.countPos = function(){
+					this.x = this.x - this.shifting_x;
+					this.y = this.y + this.shifting_y;
+				};
+				
+				// 画图
+				this.draw = function (){
+					context.save();
+					context.beginPath();
+					context.lineWidth = 1;
+					context.globalAlpha = this.alpha;
+					var line = context.createLinearGradient(
+						this.x,
+						this.y,
+						this.x+this.width,
+						this.y-this.length
+					);
+					line.addColorStop(0,"white");
+					line.addColorStop(0.5,"grey");
+					line.addColorStop(1,"black");
+					context.strokeStyle = line;
+					context.moveTo(this.x,this.y)
+					context.lineTo(this.x+this.width,this.y-this.height)
+					context.closePath()
+					context.stroke()
+					context.restore()
+					
+				};
+				
+				// 移动
+				this.move = function() {
+					let x = this.x + this.width-this.shifting_x
+					let y = this.y - this.height+this.shifting_y
+					context.clearRect(
+						x-3,
+						y-3,
+						this.shifting_x+5,
+						this.shifting_y+5
+					);
+					this.countPos();
+					this.alpha -= 0.02;
+					this.draw();
+				};
+			}
+			
+			//流星雨移动 
+			function playShowers(){
+				for(let i = 0;i<showerCount;i++){
+					let shower = showers[i];
+					shower.move();
+					if(shower.y>window.innerHeight){
+						context.clearRect(
+							shower.x,
+							shower.y-shower.height,
+							shower.width,
+							shower.height
+						);
+						showers[i] = new meteorRain();
+					}
+				}
+				setTimeout("playShowers()",2)
+			}
+			let showerCount = 20
+			let showers = new Array();
+			init();
+			starInit();
+			starPosition();
+			for (let i = 0; i<showerCount; i++){
+				let shower = new meteorRain()
+				shower.draw()
+				showers.push(shower);
+			}
+
+			playShowers();
+			
+		</script>
+	</body>
+</html>

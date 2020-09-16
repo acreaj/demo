@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<style type="text/css">
+			body {
+				background: radial-gradient(220% 105% at top center, #1b2949 10%, #75517d 40%, #e96f92 65%, #f7f7b6);
+				background-attachment: fixed;
+			}
+
+			@keyframes rotate {
+				0% {
+					transform: perspective(400px) rotateZ(20deg) rotateX(-40deg) rotateY(0);
+				}
+			
+				100% {
+					transform: perspective(400px) rotateZ(20deg) rotateX(-40deg) rotateY(-360deg);
+				}
+			
+			}
+
+			.stars {
+				transform: perspective(500px);
+				transform-style: preserve-3d;
+				position: absolute;
+				perspective-origin: 50% 100%;
+				left: 50%;
+				animation: rotate 90s infinite linear;
+				bottom: 0;
+			}
+
+			.star {
+				width: 2px;
+				height: 2px;
+				background-color: #f7f7b8;
+				position: absolute;
+				left: 0;
+				top: 0;
+				backface-visibility: hidden;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="stars">
+
+		</div>
+		<script>
+			let starNum = 800;
+			let distance = 800;
+
+			let bg = document.getElementsByClassName("stars");
+
+			for (let i = 0; i < starNum; i++) {
+				let star = document.createElement("div");
+				star.classList.add("star");
+				bg[0].appendChild(star);
+			}
+
+		
+			let starArr = document.getElementsByClassName("star");
+			
+			for (let item of starArr) {
+				let speed = 0.2 + (Math.random() * 1);
+				let trueDistance = distance + (Math.random() * 300);
+				item.style.transformOrigin = `0 0 ${trueDistance}px`;
+				item.style.transform =
+					`translate3d(0,0,-${trueDistance}px) rotateY(${(Math.random()*360)}deg)  rotateX(${(Math.random()*-50)}deg) scale(${speed},${speed})`
+
+			}
+			
+			/* Array.from(starArr).forEach(item=>{
+				// ...
+			}) */
+		</script>
+	</body>
+</html>
